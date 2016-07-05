@@ -30,6 +30,7 @@ int brojac_reaktor = 1;
 int pos_o[2] = {0,0};
 int krajigre_promenljiva = 0;
 int level=1;
+char matrix[xmax+2][ymax+2];
 
 void print_screen(void);
 
@@ -230,65 +231,101 @@ void clear_console(void)
 {
     system("CLS");
 }
+void clear_matrix(void)
+{
+    for(int i=0;i<xmax+2;i++)
+    {
+        for(int j=0;j<ymax+2;j++)
+        {
+            matrix[i][j]=' ';
+        }
+    }
+}
 void print_border(void)
 {
     for(int i = xmax + 1; i>=0; i--)
     {
-        gotoxy(i, ymax + 1);
-        cout << "_";
+        //gotoxy(i, ymax + 1);
+        matrix[i][ymax+1]='_';
     }
     for(int i = ymax + 1; i >= 0; i--)
     {
-        gotoxy(xmax+1,i);
-        cout << "|";
+        //gotoxy(xmax+1,i);
+        matrix[xmax+1][i]='|';
     }
+}
+void print_matrix(void)
+{
+    static char matrix_old[xmax+2][ymax+2];
+
+    for(int i=0;i<xmax+2;i++)
+    {
+        for(int j=0;j<ymax+2;j++)
+        {
+            if(matrix_old[i][j]!=matrix[i][j])
+            {
+                gotoxy(i,j);
+                cout<<matrix[i][j];
+            }
+        }
+    }
+
+    for(int i=0;i<xmax+2;i++)
+    {
+        for(int j=0;j<ymax+2;j++)
+        {
+            matrix_old[i][j]=matrix[i][j];
+        }
+    }
+
 }
 void print_screen(void)
 {
-    clear_console();
+    clear_matrix();
     print_border();
     for (int i = 0; i < brojac_reaktor; i++)
     {
-        gotoxy (pos_reaktor[i], pos_reaktor[i + 1]);
-        cout << "!";
+        //gotoxy (pos_reaktor[i], pos_reaktor[i + 1]);
+        matrix[pos_reaktor[i]][pos_reaktor[i+1]]='!';
     }
     for (int i = 0; i < brojac_medic; i++)
     {
-        gotoxy (pos_medic[i], pos_medic[i + 1]);
-        cout << "+";
+        //gotoxy (pos_medic[i], pos_medic[i + 1]);
+        matrix[pos_medic[i]][pos_medic[i+1]]='+';
     }
-    gotoxy(pos[0], pos[1]);
-    cout << "X";
+    //gotoxy(pos[0], pos[1]);
+    matrix[pos[0]][pos[1]]='X';
     if (energija < 0)
     {
         energija = 0;
     }
-    gotoxy(pos_o[0], pos_o[1]);
-    cout << "O";
-    gotoxy(0, ymax + 2);
+    //gotoxy(pos_o[0], pos_o[1]);
+    matrix[pos_o[0]][pos_o[1]]='O';
+    gotoxy(xmax+3,0);
     cout << "Tvoja energija je: " << energija << endl;
-    gotoxy(0, ymax + 3);
+    gotoxy(xmax+3, 1);
     cout << "Protivnikova energija je: " << energija2 << endl;
-    gotoxy(0, ymax + 4);
+    gotoxy(xmax+3, 2);
     cout << "Score: " << score << endl;
     if (pos_m[0] <= xmax && pos_m[1] <= ymax && pos_m[0]>=0 && pos_m[1]>=0)
     {
-        gotoxy(pos_m[0], pos_m[1]);
-        cout << "*";
+        //gotoxy(pos_m[0], pos_m[1]);
+        matrix[pos_m[0]][pos_m[1]]='*';
     }
-    gotoxy(xmax+2,0);
+    gotoxy(xmax+3,3);
     cout<<"Level: "<<level<<endl;
+    print_matrix();
     return;
 }
 
 int igrica (int komanda)
 {
     static int usporenje = 0;
-    static int ukupno_usporenje = 8;
-    static int metak_ispaljen_desno= 0;
-    static int metak_ispaljen_levo=0;
-    static int metak_ispaljen_dole=0;
-    static int metak_ispaljen_gore=0;
+    static int ukupno_usporenje = 120;
+    static int metak_ispaljen_desno = 0;
+    static int metak_ispaljen_levo = 0;
+    static int metak_ispaljen_dole = 0;
+    static int metak_ispaljen_gore = 0;
     if (komanda == levo)
     {
         pos[0] -= 1;
@@ -418,7 +455,7 @@ int igrica (int komanda)
         score=score+50;
         energija2=100;
         level++;
-        ukupno_usporenje--;
+        ukupno_usporenje=ukupno_usporenje-10;
         pos_o[0] = rand() % xmax + 1;
         pos_o[1] = rand() % ymax + 1;
     }
