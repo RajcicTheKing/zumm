@@ -9,28 +9,44 @@
 using namespace std;
 
 enum komande {levo, desno, gore, dole, nista, pucanj_desno, pucanj_levo, pucanj_dole, pucanj_gore};
+enum oruzje {pistolj,laser,nijedno};
 enum result {res_reaktor, res_medic, res_normal};
 const int reaktor = -20;
 const int medic = 30;
-const int pocetna_energija = 200;
-const int kretanje = -5;
+const int pocetna_energija = 111111200;
+//const int kretanje = -5;
 const int maks_broj_reaktora = 400;
 const int maks_broj_medica = 400;
 const int xmax = 20;
 const int ymax = 20;
 int pos_reaktor[maks_broj_reaktora * 2] = {1, 4};
 int pos_medic[maks_broj_medica * 2] = {4, 1};
-int pos[2] = {0,0};
-int pos_m[2] = {xmax + 1, ymax + 1};
-int energija = 100000;
-int energija2 = 100;
-int score = 0;
+//int pos[2] = {0,0};
+//int pos_m[2] = {xmax + 1, ymax + 1};
+//int energija = 100000;
+//int energija2 = 100;
+//int score = 0;
 int brojac_medic = 1;
 int brojac_reaktor = 1;
-int pos_o[2] = {0,0};
+//int pos_o[2] = {0,0};
 int krajigre_promenljiva = 0;
 int level=1;
 char matrix[xmax+2][ymax+2];
+
+struct igrac
+{
+    char tip;
+    int energija;
+    int energija_kretanja;
+    int poeni;
+    int pozicija[2];
+    int brzina;
+    int stanje;
+    int oruzje;
+    int pozicija_metka[2];
+};
+igrac igrac_x;
+igrac igrac_o;
 
 void print_screen(void);
 
@@ -207,7 +223,7 @@ void gameover (void)
     krajigre_promenljiva = 1;
     print_screen();
     gotoxy(0, ymax + 4);
-    cout << "Game over, your score is " << score << ".";
+    cout << "Game over, your score is " << igrac_x.poeni << ".";
     Beep(420, 200);
     Beep(400, 200);
     Beep(420, 200);
@@ -294,23 +310,23 @@ void print_screen(void)
         matrix[pos_medic[i]][pos_medic[i+1]]='+';
     }
     //gotoxy(pos[0], pos[1]);
-    matrix[pos[0]][pos[1]]='X';
-    if (energija < 0)
+    matrix[igrac_x.pozicija[0]][igrac_x.pozicija[1]]='X';
+    if (igrac_x.energija < 0)
     {
-        energija = 0;
+        igrac_x.energija = 0;
     }
     //gotoxy(pos_o[0], pos_o[1]);
-    matrix[pos_o[0]][pos_o[1]]='O';
+    matrix[igrac_o.pozicija[0]][igrac_o.pozicija[1]]='O';
     gotoxy(xmax+3,0);
-    cout << "Tvoja energija je: " << energija << endl;
+    cout << "Tvoja energija je: " << igrac_x.energija << endl;
     gotoxy(xmax+3, 1);
-    cout << "Protivnikova energija je: " << energija2<<" " << endl;
+    cout << "Protivnikova energija je: " << igrac_o.energija<<" " << endl;
     gotoxy(xmax+3, 2);
-    cout << "Score: " << score << endl;
-    if (pos_m[0] <= xmax && pos_m[1] <= ymax && pos_m[0]>=0 && pos_m[1]>=0)
+    cout << "Score: " << igrac_x.poeni << endl;
+    if (igrac_x.pozicija_metka[0] <= xmax && igrac_x.pozicija_metka[1] <= ymax && igrac_x.pozicija_metka[0]>=0 && igrac_x.pozicija_metka[1]>=0)
     {
         //gotoxy(pos_m[0], pos_m[1]);
-        matrix[pos_m[0]][pos_m[1]]='*';
+        matrix[igrac_x.pozicija_metka[0]][igrac_x.pozicija_metka[1]]='*';
     }
     gotoxy(xmax+3,3);
     cout<<"Level: "<<level<<endl;
@@ -328,26 +344,26 @@ int igrica (int komanda)
     static int metak_ispaljen_gore = 0;
     if (komanda == levo)
     {
-        pos[0] -= 1;
-        energija = energija + kretanje;
+        igrac_x.pozicija[0] -= 1;
+        igrac_x.energija = igrac_x.energija + igrac_x.energija_kretanja;
         print_screen();
     }
     if (komanda == desno)
     {
-        pos[0] += 1;
-        energija = energija + kretanje;
+        igrac_x.pozicija[0] += 1;
+        igrac_x.energija = igrac_x.energija + igrac_x.energija_kretanja;
         print_screen();
     }
     if (komanda == gore)
     {
-        pos[1] -= 1;
-        energija = energija + kretanje;
+        igrac_x.pozicija[1] -= 1;
+        igrac_x.energija = igrac_x.energija + igrac_x.energija_kretanja;
         print_screen();
     }
     if (komanda == dole)
     {
-        pos[1] += 1;
-        energija = energija + kretanje;
+        igrac_x.pozicija[1] += 1;
+        igrac_x.energija = igrac_x.energija + igrac_x.energija_kretanja;
         print_screen();
     }
     if (komanda == pucanj_desno)
@@ -382,12 +398,12 @@ int igrica (int komanda)
     {
         if(metak_ispaljen_desno< xmax+1)
         {
-            pos_m[0]++;
+            igrac_x.pozicija_metka[0]++;
         }
         else
         {
             metak_ispaljen_desno=0;
-            pos_m[0]=xmax+1;
+            igrac_x.pozicija_metka[0]=xmax+1;
         }
 
     }
@@ -395,24 +411,24 @@ int igrica (int komanda)
     {
         if(metak_ispaljen_levo>0)
         {
-            pos_m[0]--;
+            igrac_x.pozicija_metka[0]--;
         }
         else
         {
             metak_ispaljen_levo=0;
-            pos_m[0]=xmax+1;
+            igrac_x.pozicija_metka[0]=xmax+1;
         }
     }
     if(metak_ispaljen_dole==1)
     {
         if(metak_ispaljen_dole<ymax+1)
         {
-            pos_m[1]++;
+            igrac_x.pozicija_metka[1]++;
         }
         else
         {
             metak_ispaljen_dole=0;
-            pos_m[1]=ymax+1;
+            igrac_x.pozicija_metka[1]=ymax+1;
         }
 
     }
@@ -420,19 +436,19 @@ int igrica (int komanda)
     {
         if(metak_ispaljen_gore>0)
         {
-             pos_m[1]--;
+             igrac_x.pozicija_metka[1]--;
         }
         else
         {
             metak_ispaljen_gore=0;
-            pos_m[1]=ymax+1;
+            igrac_x.pozicija_metka[1]=ymax+1;
         }
     }
     for (int i = 0; i < brojac_reaktor; i++)
     {
-        if ((pos[0] == pos_reaktor[i]) && (pos[1] == pos_reaktor[i + 1]))
+        if ((igrac_x.pozicija[0] == pos_reaktor[i]) && (igrac_x.pozicija[1] == pos_reaktor[i + 1]))
         {
-            energija = energija + reaktor;
+            igrac_x.energija = igrac_x.energija + reaktor;
             for (int j = 0; j < brojac_reaktor; j++)
             {
                 pos_reaktor[j] = rand() % xmax + 1;
@@ -444,9 +460,9 @@ int igrica (int komanda)
     }
     for (int i = 0; i < brojac_reaktor; i++)
     {
-        if ((pos_o[0] == pos_reaktor[i]) && (pos_o[1] == pos_reaktor[i + 1]))
+        if ((igrac_o.pozicija[0] == pos_reaktor[i]) && (igrac_o.pozicija[1] == pos_reaktor[i + 1]))
         {
-            energija2 = energija2 + reaktor;
+            igrac_o.energija = igrac_o.energija + reaktor;
             for (int j = 0; j < brojac_reaktor; j++)
             {
                 pos_reaktor[j] = rand() % xmax + 1;
@@ -458,9 +474,9 @@ int igrica (int komanda)
     }
     for (int i = 0; i < brojac_medic; i++)
     {
-        if ((pos[0] == pos_medic[i]) && (pos[1] == pos_medic[i + 1]))
+        if ((igrac_x.pozicija[0] == pos_medic[i]) && (igrac_x.pozicija[1] == pos_medic[i + 1]))
         {
-            energija = energija + medic;
+            igrac_x.energija = igrac_x.energija + medic;
             for (int j = 0; j < brojac_medic; j++)
             {
                 pos_medic[j] = rand() % xmax + 1;
@@ -472,9 +488,9 @@ int igrica (int komanda)
     }
     for (int i = 0; i < brojac_medic; i++)
     {
-        if ((pos_o[0] == pos_medic[i]) && (pos_o[1] == pos_medic[i + 1]))
+        if ((igrac_o.pozicija[0] == pos_medic[i]) && (igrac_o.pozicija[1] == pos_medic[i + 1]))
         {
-            energija2 = energija2 + medic;
+            igrac_o.energija = igrac_o.energija + medic;
             for (int j = 0; j < brojac_medic; j++)
             {
                 pos_medic[j] = rand() % xmax + 1;
@@ -484,75 +500,75 @@ int igrica (int komanda)
             return res_medic;
         }
     }
-    if(energija2<=0)
+    if(igrac_o.energija<=0)
     {
-        score=score+50;
-        energija2=100;
+        igrac_x.poeni=igrac_x.poeni+50;
+        igrac_o.energija=100;
         level++;
         ukupno_usporenje=ukupno_usporenje-10;
-        pos_o[0] = rand() % xmax + 1;
-        pos_o[1] = rand() % ymax + 1;
+        igrac_o.pozicija[0] = rand() % xmax + 1;
+        igrac_o.pozicija[1] = rand() % ymax + 1;
     }
-    if (pos[0] > xmax)
+    if (igrac_x.pozicija[0] > xmax)
     {
-        pos[0] = 0;
+        igrac_x.pozicija[0] = 0;
         print_screen();
     }
-    if (pos[0] < 0)
+    if (igrac_x.pozicija[0] < 0)
     {
-        pos[0] = xmax;
+        igrac_x.pozicija[0] = xmax;
         print_screen();
     }
-    if (pos[1] > ymax)
+    if (igrac_x.pozicija[1] > ymax)
     {
-        pos[1] = 0;
+        igrac_x.pozicija[1] = 0;
         print_screen();
     }
-    if (pos[1] < 0)
+    if (igrac_x.pozicija[1] < 0)
     {
-        pos[1] = ymax;
+        igrac_x.pozicija[1] = ymax;
         print_screen();
     }
-    if (pos_m[0] == pos_o[0] && pos_m[1] == pos_o[1])
+    if (igrac_x.pozicija_metka[0] == igrac_o.pozicija[0] && igrac_x.pozicija_metka[1] == igrac_o.pozicija[1])
     {
         usporenje = -20;
-        energija2=energija2-10;
+        igrac_o.energija=igrac_o.energija-10;
         metak_ispaljen_desno = 0;
         metak_ispaljen_dole=0;
         metak_ispaljen_gore=0;
         metak_ispaljen_levo=0;
-        pos_m[0] = xmax + 1;
-        pos_m[1] = ymax + 1;
-        score = score + 10;
+        igrac_x.pozicija_metka[0] = xmax + 1;
+        igrac_x.pozicija_metka[1] = ymax + 1;
+        igrac_x.poeni = igrac_x.poeni + 10;
     }
-    if (pos[0] != pos_o[0])
+    if (igrac_x.pozicija[0] != igrac_o.pozicija[0])
     {
         usporenje++;
         if (usporenje >= ukupno_usporenje)
         {
-            if (pos[0] < pos_o[0])
+            if (igrac_x.pozicija[0] < igrac_o.pozicija[0])
             {
-                pos_o[0]--;
+                igrac_o.pozicija[0]--;
             }
-            else if (pos[0] > pos_o[0])
+            else if (igrac_x.pozicija[0] > igrac_o.pozicija[0])
             {
-                pos_o[0]++;
+                igrac_o.pozicija[0]++;
             }
         }
         print_screen();
     }
-    if (pos[1] != pos_o[1])
+    if (igrac_x.pozicija[1] != igrac_o.pozicija[1])
     {
         usporenje++;
         if (usporenje >= ukupno_usporenje)
         {
-            if (pos[1] < pos_o[1])
+            if (igrac_x.pozicija[1] < igrac_o.pozicija[1])
             {
-                pos_o[1]--;
+                igrac_o.pozicija[1]--;
             }
-            else if (pos[1] > pos_o[1])
+            else if (igrac_x.pozicija[1] > igrac_o.pozicija[1])
             {
-                pos_o[1]++;
+                igrac_o.pozicija[1]++;
             }
         }
         print_screen();
@@ -562,7 +578,7 @@ int igrica (int komanda)
     {
         usporenje = 0;
     }
-    if (pos[0] == pos_o[0] && pos[1] == pos_o[1])
+    if (igrac_x.pozicija[0] == igrac_o.pozicija[0] && igrac_x.pozicija[1] == igrac_o.pozicija[1])
     {
         gameover();
     }
@@ -571,13 +587,38 @@ int igrica (int komanda)
 
 int main (int argc, char *argv[])
 {
+    igrac_x.brzina=0;
+    igrac_x.energija=pocetna_energija;
+    igrac_x.energija_kretanja=-5;
+    igrac_x.oruzje=pistolj;
+    igrac_x.poeni=0;
+    igrac_x.pozicija[0]=0;
+    igrac_x.pozicija[1]=0;
+    igrac_x.pozicija_metka[0] = {xmax + 1};
+    igrac_x.pozicija_metka[1] = { ymax + 1};
+    igrac_x.stanje=nista;
+    igrac_x.tip='X';
+
+
+    igrac_o.brzina=120;
+    igrac_o.energija=100;
+    igrac_o.energija_kretanja=0;
+    igrac_o.oruzje=nijedno;
+    igrac_o.poeni=0;
+    igrac_o.pozicija[0] = rand() % xmax + 1;
+    igrac_o.pozicija[1] = rand() % ymax + 1;
+    igrac_o.pozicija[0] = {xmax + 1};
+    igrac_o.pozicija[1] = {ymax + 1};
+    igrac_o.stanje=nista;
+    igrac_o.tip='O';
+
     srand(time(NULL));
     pos_reaktor[0] = rand() % xmax + 1;
     pos_reaktor[1] = rand() % ymax + 1;
     pos_medic[0] = rand() % xmax + 1;
     pos_medic[1] = rand() % ymax + 1;
-    pos_o[0] = rand() % xmax + 1;
-    pos_o[1] = rand() % ymax + 1;
+    //pos_o[0] = rand() % xmax + 1;
+    //pos_o[1] = rand() % ymax + 1;
     pthread_t threads;
     long t;
     pthread_create(&threads, NULL, Muzika, (void *)t);
@@ -605,34 +646,34 @@ int main (int argc, char *argv[])
         }
         else if (c == 'l')
         {
-            pos_m[0] = pos[0] + 1;
-            pos_m[1] = pos[1];
+            igrac_x.pozicija_metka[0]= igrac_x.pozicija[0] + 1;
+            igrac_x.pozicija_metka[1]= igrac_x.pozicija[1];
             stanje = igrica(pucanj_desno);
         }
         else if(c=='j')
         {
-            if(pos[0]>0)
+            if(igrac_x.pozicija[0]>0)
             {
-                pos_m[0] = pos[0] - 1;
-                pos_m[1] = pos[1];
+                igrac_x.pozicija_metka[0]= igrac_x.pozicija[0] - 1;
+                igrac_x.pozicija_metka[1]= igrac_x.pozicija[1];
                 stanje = igrica(pucanj_levo);
             }
 
         }
         else if(c=='i')
         {
-            if(pos[1]>0)
+            if(igrac_x.pozicija[1]>0)
             {
-                pos_m[0] = pos[0];
-                pos_m[1] = pos[1]+1;
+                igrac_x.pozicija_metka[0]= igrac_x.pozicija[0];
+                igrac_x.pozicija_metka[1]= igrac_x.pozicija[1]+1;
                 stanje = igrica(pucanj_gore);
             }
 
         }
         else if(c=='k')
         {
-            pos_m[0] = pos[0];
-            pos_m[1] = pos[1]-1;
+            igrac_x.pozicija_metka[0]= igrac_x.pozicija[0];
+            igrac_x.pozicija_metka[1]= igrac_x.pozicija[1]-1;
             stanje = igrica(pucanj_dole);
         }
         else
@@ -655,9 +696,9 @@ int main (int argc, char *argv[])
             {
                 dobarzvuk();
             }
-            score++;
+            igrac_x.poeni++;
         }
-        if (energija <= 0)
+        if (igrac_x.energija <= 0)
         {
             break;
         }
