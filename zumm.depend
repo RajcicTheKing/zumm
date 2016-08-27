@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1469211830 source:c:\users\uki\desktop\c++\zumm\main.cpp
+	<iostream>
+	<windows.h>
+	<stdio.h>
+	<conio.h>
+	<pthread.h>
+	<stdlib.h>
+	<time.h>
+	<main.h>
+	<Metak.h>
+
+1469211830 c:\users\uki\desktop\c++\zumm\include\main.h
+
+1469211731 c:\users\uki\desktop\c++\zumm\include\metak.h
+
+1472301222 source:c:\users\uki\desktop\c++\zumm_alfa\main.cpp
+	<iostream>
+	<windows.h>
+	<stdio.h>
+	<conio.h>
+	<pthread.h>
+	<stdlib.h>
+	<time.h>
+	<main.h>
+	<Metak.h>
+
+1472060129 c:\users\uki\desktop\c++\zumm_alfa\include\main.h
+
+1472297418 c:\users\uki\desktop\c++\zumm_alfa\include\metak.h
+	<main.h>
+
+1472301566 source:c:\users\uki\desktop\c++\zumm_alfa\src\metak.cpp
+	"Metak.h"
+	"main.h"
+
