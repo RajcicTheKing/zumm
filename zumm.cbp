@@ -34,9 +34,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/Igrac.h" />
 		<Unit filename="include/Metak.h" />
 		<Unit filename="include/main.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Igrac.cpp" />
 		<Unit filename="src/Metak.cpp" />
 		<Extensions>
 			<code_completion />

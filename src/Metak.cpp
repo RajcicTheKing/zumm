@@ -1,12 +1,18 @@
 #include "Metak.h"
 #include "main.h"
 
+#include <windows.h>
+
 Metak::Metak()
 {
    u_kretanju=false;
    razorna_moc=10;
    pozicija_x=xmax+2;
    pozicija_y=ymax+2;
+}
+void Metak::zvuk_metka()
+{
+    Beep(5000,10);
 }
 
 void Metak::kretanje()
@@ -61,8 +67,10 @@ void Metak::kretanje()
 }
 void Metak::ispali(int x_igraca,int y_igraca,int komanda)
 {
+
     if(u_kretanju==false)
     {
+        zvuk_metka();
         u_kretanju=true;
         pozicija_x=x_igraca;
         pozicija_y=y_igraca;

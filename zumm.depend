@@ -14,7 +14,7 @@
 
 1469211731 c:\users\uki\desktop\c++\zumm\include\metak.h
 
-1472301222 source:c:\users\uki\desktop\c++\zumm_alfa\main.cpp
+1473102616 source:c:\users\uki\desktop\c++\zumm_alfa\main.cpp
 	<iostream>
 	<windows.h>
 	<stdio.h>
@@ -24,13 +24,21 @@
 	<time.h>
 	<main.h>
 	<Metak.h>
+	<Igrac.h>
 
-1472060129 c:\users\uki\desktop\c++\zumm_alfa\include\main.h
+1473102134 c:\users\uki\desktop\c++\zumm_alfa\include\main.h
 
-1472297418 c:\users\uki\desktop\c++\zumm_alfa\include\metak.h
+1473099459 c:\users\uki\desktop\c++\zumm_alfa\include\metak.h
 	<main.h>
 
-1472301566 source:c:\users\uki\desktop\c++\zumm_alfa\src\metak.cpp
+1473100190 source:c:\users\uki\desktop\c++\zumm_alfa\src\metak.cpp
 	"Metak.h"
+	"main.h"
+	<windows.h>
+
+1473102836 c:\users\uki\desktop\c++\zumm_alfa\include\igrac.h
+
+1473102894 source:c:\users\uki\desktop\c++\zumm_alfa\src\igrac.cpp
+	"Igrac.h"
 	"main.h"
 
